@@ -10,6 +10,7 @@ let timerId = null;
 function onStart() {
     startBtn.disabled = true;
     stopBtn.disabled = false;
+    console.log(1);
 
     changeColor();
 }
