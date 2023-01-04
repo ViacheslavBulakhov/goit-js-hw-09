@@ -1,14 +1,18 @@
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
+import Notiflix from 'notiflix';
+
 
 const refs = {
     startBtn: document.querySelector('button[data-start]'),
+    input: document.querySelector('input#datetime-picker'),
+    
     days: document.querySelector('span[data-days]'),
     hours: document.querySelector('span[data-hours]'),
     minutes: document.querySelector('span[data-minutes]'),
     seconds: document.querySelector('span[data-seconds]'),
 }
-const { startBtn,days, hours, minutes, seconds } = refs;
+const { startBtn,days,input, hours, minutes, seconds } = refs;
 
 let timeToFinish = null;
 let currentTime = null;
@@ -20,25 +24,34 @@ enableTime: true,
 time_24hr: true,
 defaultDate: new Date(),
 minuteIncrement: 1,
-onClose(selectedDates) {
+    onClose(selectedDates) {
+    if (currentTime !== null) {
+    Notiflix.Notify.warning("Wait until the timer was finished");
+    return;
+    };
     if (options.defaultDate >= selectedDates[0]) {
-        window.alert("Please choose a date in the future");
-        return;
+    Notiflix.Notify.warning("Please choose a date in the future");
+    return;
     };
     startBtn.disabled = false;
-
     timeToFinish = selectedDates[0].getTime() - options.defaultDate.getTime();
-    currentTime = timeToFinish;
 },
 };
-flatpickr('input#datetime-picker', options)
+flatpickr('input#datetime-picker', options);
 
 startBtn.addEventListener('click', onStart);
 
 function onStart() {
+    currentTime = timeToFinish;
+    input.addEventListener('click', closeInput);
     createEventTime();
     updateEventTime();
 };
+
+const closeInput = () => {
+    flatpickr('input#datetime-picker', options).close();
+}
+
 const addLeadingZero = value => value.padStart(2, '0');
 
 function createEventTime() {
@@ -54,11 +67,15 @@ function updateEventTime() {
     timerId = setInterval(() => {
         currentTime = (timeToFinish -= 1000);
         createEventTime()
+
         if (timeToFinish < 1000) {
-    clearInterval(timerId);
-    timeToFinish = 0;
-    startBtn.disabled = false;
+            clearInterval(timerId);
+            timeToFinish = null;
+            currentTime = null;
+            startBtn.disabled = false;
+            input.removeEventListener('click', closeInput)
         }
+
     }, 1000)
 }
 function convertMs(ms) {

@@ -16,3 +16,25 @@ img {
   display: block;
   max-width: 100%;
 }
+/* my css */
+span.value {
+font-size: 30px;
+font-weight: bold;
+margin: 0 auto;
+}
+span.label {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0 auto;
+}
+.timer{
+  display: flex;
+  justify-content: flex-start;
+}
+.field{
+  display: flex;
+  flex-direction: column;
+}
+.field:not(:last-child) {
+  margin-right: 10px;
+}
