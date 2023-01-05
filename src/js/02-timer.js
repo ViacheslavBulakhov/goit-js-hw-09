@@ -64,7 +64,7 @@ function createEventTime() {
 function updateEventTime() {
     startBtn.disabled = true;
 
-    timerId = setInterval(() => {
+    const timerId = setInterval(() => {
         currentTime = (timeToFinish -= 1000);
         createEventTime()
 
